@@ -26,6 +26,7 @@ export const Profile = () => {
         }
 
         db.collection('users').doc(currentUser.id).set(formData);
+        event.target.reset()
         
     }
     
