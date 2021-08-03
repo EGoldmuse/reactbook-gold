@@ -3,6 +3,7 @@ import { CartItem } from '../components/CartItem'
 import { useAuth } from '../contexts/AuthContext';
 import { DataContext } from '../contexts/DataProvider';
 import firebase from '../firebase';
+import StripeCheckout from 'react-stripe-checkout';
 
 export const Cart = () => {
     const db = firebase.firestore();
@@ -11,6 +12,7 @@ export const Cart = () => {
     const [newCart, setNewCart] = useState({});
 
     const handleUpdate = (infoObj) => {
+        console.log(infoObj)
         if (infoObj.id in newCart) {
             let newDict = { ...newCart };
             newDict[infoObj.id] = infoObj.quantity;
@@ -31,6 +33,10 @@ export const Cart = () => {
         getCart();
     }, [ newCart, currentUser.id, db, getCart ])
 
+    function handleToken(token, addresses) {
+        console.log({ token, addresses })
+    }
+
     return (
         <div>
             <h3>Cart</h3>
@@ -49,11 +55,11 @@ export const Cart = () => {
                     {Object.values(cart.items).map(productInfo => <CartItem handleUpdate={handleUpdate} key={productInfo.id} data={productInfo} />)}
                     {/* <!-- END PRODUCTS --> */}
 
-                    <div className="pull-right">
+                    {/* <div className="pull-right">
                         <button onClick={() => handleUpdate()} className="btn btn-outline-secondary pull-right">
                             Update Shopping Cart
                         </button>
-                    </div>
+                    </div> */}
                 </div>
                 <div className="card-footer">
                     {/* <!-- <div className="coupon col-md-5 col-sm-5 no-padding-left pull-left">
@@ -79,9 +85,11 @@ export const Cart = () => {
                     </div>
                     <div className="pull-right" style={{ margin: "10px" }}>
                         <form id="checkout-form" action="" method="POST">
-                            <input type="submit" className="btn btn-success pull-right" value="Checkout" />
+                            <StripeCheckout stripeKey='pk_test_51JCUdZJgTmZDahHfDvVW3U0cZEkOIKiXCjGIZIzb7Kq2qiJwe7cX5NYizoE777uciuRbemTZI9v7jbQXIkiIkxIz00xuzeYMdW'
+                                token={handleToken} />
                         </form>
                     </div>
+                    
                 </div>
             </div>
         </div>
